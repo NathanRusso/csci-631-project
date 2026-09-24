@@ -1,1 +1,1 @@
-# csci-631-project
+# Trading Card Classifier
