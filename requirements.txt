@@ -1,0 +1,9 @@
+# Hugging Face, Kaggle, and Image Processing
+datasets
+huggingface_hub>=1.5.0,<2.0.0
+kaggle
+pandas
+pillow
+requests
+tqdm
+urllib3

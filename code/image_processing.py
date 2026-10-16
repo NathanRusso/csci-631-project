@@ -1,5 +1,3 @@
-#pip install kaggle datasets pillow pandas requests tqdm
-
 import io
 import shutil
 import time
