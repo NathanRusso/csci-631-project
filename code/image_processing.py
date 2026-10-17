@@ -285,13 +285,13 @@ def main():
     kaggle_api.authenticate()
 
     # Step 1: Pokémon cards
-    # process_pokemon(BASE_OUTPUT_DIR, TARGET_SIZE, kaggle_api)
+    process_pokemon(BASE_OUTPUT_DIR, TARGET_SIZE, kaggle_api)
 
     # Step 2: Yu-Gi-Oh cards (with YGOPRODeck rate protection)
-    process_yugioh(BASE_OUTPUT_DIR, TARGET_SIZE, kaggle_api)
+    # process_yugioh(BASE_OUTPUT_DIR, TARGET_SIZE, kaggle_api)
 
     # Step 3: MTG cards (streaming capped to 20,000)
-    #process_mtg_streaming(BASE_OUTPUT_DIR, TARGET_SIZE, MTG_MAX_SAMPLES)
+    process_mtg_streaming(BASE_OUTPUT_DIR, TARGET_SIZE, MTG_MAX_SAMPLES)
 
     # Final cleanup of any lingering raw files
     shutil.rmtree(RAW_TEMP_DIR, ignore_errors=True)

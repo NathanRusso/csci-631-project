@@ -7,3 +7,6 @@ pillow
 requests
 tqdm
 urllib3
+cv2
+numpy
+sklearn

@@ -7,7 +7,7 @@
 - Tyler Alvarez (tma9531)
 
 ## Dataset
-https://huggingface.co/datasets/bmf4295/CSCI635_Final_Project/viewer/default/train?p=4
+https://huggingface.co/datasets/bmf4295/CSCI635_Final_Project
 
 Images from dataset taken from the following sources
 
