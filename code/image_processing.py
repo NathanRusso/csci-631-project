@@ -2,6 +2,7 @@ import io
 import shutil
 import time
 import threading
+from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from PIL import Image
@@ -277,6 +278,9 @@ def process_mtg_streaming(base_output: Path, target_size: tuple[int, int], max_s
 
 
 def main():
+    # Setup environment variables if they exists
+    load_dotenv("../.env")   
+
     BASE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     RAW_TEMP_DIR.mkdir(parents=True, exist_ok=True)
 

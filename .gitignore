@@ -1,6 +1,7 @@
+.env
 .DS_Store
+.venv/
+.vscode/
 mtg/
 pokemon/
 yugioh/
-.venv
-.vscode/
