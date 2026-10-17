@@ -8,10 +8,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
-"""
-Returns card jpgs as a Numpy array of 3D BGR vectors.
-"""
 def convert_images_to_vectors(path, count):
+    """
+    Returns card jpgs as a Numpy array of 3D BGR vectors.
+    """ 
     card_vectors = []
 
     for filename in os.listdir(path):
@@ -26,10 +26,10 @@ def convert_images_to_vectors(path, count):
     return card_vectors
 
 
-"""
-Converts to grayscale, normalizes image pixel values to 0-1 and returns a new array.
-"""
 def normalize_image_vectors(imgs):
+    """
+    Converts to grayscale, normalizes image pixel values to 0-1 and returns a new array.
+    """
     normalized_imgs = []
 
     for img in imgs:
@@ -41,10 +41,10 @@ def normalize_image_vectors(imgs):
     return normalized_imgs
 
 
-"""
-Creates a dictionary pairing cards with their brand label.
-"""
 def create_data_columns(brands, labels):
+    """
+    Creates a dictionary pairing cards with their brand label.
+    """
     label_data = []
     card_data = []
     for brand, label in zip(brands, labels):
@@ -61,18 +61,18 @@ def create_data_columns(brands, labels):
     return data
 
 
-"""
-Preprocessing of images:
-1) Load images from folders
-2) Encode as vectors
-    3) Resize if necessary
-    4) Color correction if necessary
-    5) Noise removal if necessary
-6) Normalize pixel values (0-1)
-7) Create pandas dataframe with labels
-8) Train/test/validation split with stratification
-"""
 def main():
+    """
+    Preprocessing of images:
+    1) Load images from folders
+    2) Encode as vectors
+        3) Resize if necessary
+        4) Color correction if necessary
+        5) Noise removal if necessary
+    6) Normalize pixel values (0-1)
+    7) Create pandas dataframe with labels
+    8) Train/test/validation split with stratification
+    """
     mtg_path = 'data/mtg'
     pkm_path = 'data/pokemon'
     ygo_path = 'data/yugioh'
