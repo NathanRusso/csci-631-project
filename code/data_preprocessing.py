@@ -145,50 +145,14 @@ def main():
     3) Split the data into Train, Test, and Validation sets.
     """
 
-    """
-    1) Load images from folders
-    2) Encode as vectors
-        3) Resize if necessary
-        4) Color correction if necessary
-        5) Noise removal if necessary
-    6) Normalize pixel values (0-1)
-    7) Create pandas dataframe with labels
-    8) Train/test/validation split with stratification
-
-    card_count = 10
-    #
-
-    # jpg images --> vectors
-    print("Converting images to vectors...")
-    mtg_cards = convert_images_to_vectors_original(PATH_MTG, card_count)
-    pkm_cards = convert_images_to_vectors_original(PATH_PKM, card_count)
-    ygo_cards = convert_images_to_vectors_original(PATH_YGO, card_count)
-
-    # resizing likely fine for now, all 500x700
-    # not sure if we'll need color correction or noise removal
-
-    # normalization (BGR values to 0-1)
-    print("Normalizing pixel values...")
-    mtg_cards = normalize_image_vectors(mtg_cards)
-    pkm_cards = normalize_image_vectors(pkm_cards)
-    ygo_cards = normalize_image_vectors(ygo_cards)
-
-    # convert to pandas dataframe with labels
-    print("Creating dataframe...")
-    card_brands = [mtg_cards, pkm_cards, ygo_cards]
-    card_labels = ['MTG', 'Pokemon', 'Yu-Gi-Oh']
-    data = create_data_columns(card_brands, card_labels)
-    df = pd.DataFrame(data)
-    """
-
     #card_count = min(COUNT_MTG, COUNT_PKM, COUNT_YGO)
     card_count = 10     # 10 for testing
 
     # Gets the vectors for all cards JPGs per path
     print("[INFO] Converting card JPGS to vectors...")
-    mtg_cards = convert_images_to_vectors(PATH_MTG, 100)
-    pkm_cards = convert_images_to_vectors(PATH_PKM, 50)
-    ygo_cards = convert_images_to_vectors(PATH_YGO, 30)
+    mtg_cards = convert_images_to_vectors(PATH_MTG, card_count)
+    pkm_cards = convert_images_to_vectors(PATH_PKM, card_count)
+    ygo_cards = convert_images_to_vectors(PATH_YGO, card_count)
 
     # Add the card vectors into a Pandas dataframe
     print("[INFO] Creating Pandas dataframe...")
@@ -209,8 +173,8 @@ def main():
 
     # Balanced the class weighs since each set of cards has a different number of images
     classes = np.array([CardType.MTG.value, CardType.PKM.value, CardType.YGO.value])
-    class_wights_array = compute_class_weight(class_weight='balanced', classes=classes, y=y)
-    class_wights_dict = dict(zip(classes, class_wights_array))
+    class_weights_array = compute_class_weight(class_weight='balanced', classes=classes, y=y)
+    class_weights_dict = dict(zip(classes, class_weights_array))
 
 
 if __name__ == "__main__":
