@@ -24,59 +24,6 @@ class CardType(Enum):
     YGO = 2     # Yu-Gi-Oh
 
 
-def convert_images_to_vectors_original(path, count):
-    """
-    Returns card jpgs as a Numpy array of 3D BGR vectors.
-    """ 
-    card_vectors = []
-
-    for filename in os.listdir(path):
-        if len(card_vectors) >= count:
-            break
-
-        filepath = os.path.join(path, filename)
-        card = cv.imread(filepath)
-        if card is not None:
-            card_vectors.append(card)
-
-    return card_vectors
-
-
-def normalize_image_vectors(imgs):
-    """
-    Converts to grayscale, normalizes image pixel values to 0-1 and returns a new array.
-    """
-    normalized_imgs = []
-
-    for img in imgs:
-        float_img = img.astype(np.float32)
-        gray_image = cv.cvtColor(float_img, cv.COLOR_BGR2GRAY)
-        norm_img = cv.normalize(gray_image, None, 0, 1, cv.NORM_MINMAX)
-        normalized_imgs.append(norm_img)
-
-    return normalized_imgs
-
-
-def create_data_columns(brands, labels):
-    """
-    Creates a dictionary pairing cards with their brand label.
-    """
-    label_data = []
-    card_data = []
-    for brand, label in zip(brands, labels):
-        for card in brand:
-            card.flatten()
-            label_data.append(label)
-            card_data.append(card)
-
-    data = {
-        'label': label_data,
-        'card': card_data
-    }
-
-    return data
-
-
 def convert_images_to_vectors(path: str, count: int | None = None):
     """
     Converts the card JPGs in the path to Numpy normalized grayscale vectors.
