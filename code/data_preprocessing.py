@@ -12,7 +12,8 @@ from sklearn.utils.class_weight import compute_class_weight
 PATH_MTG = 'data/mtg'
 PATH_PKM = 'data/pokemon'
 PATH_YGO = 'data/yugioh'
-COUNT_MTG = 20_000
+#COUNT_MTG = 20_000
+COUNT_MTG = 16_991
 COUNT_PKM = 21_199
 COUNT_YGO = 14_599
 
