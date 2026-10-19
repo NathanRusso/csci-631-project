@@ -1,6 +1,6 @@
 # Trading Card Classifier
 
-## Team
+## Team 7
 
 - Brady Friese (bmf4295)
 - Nathan Russo (ndr8530)
