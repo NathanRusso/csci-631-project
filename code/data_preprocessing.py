@@ -1,7 +1,8 @@
 import os
 import cv2 as cv
-import pandas as pd
 import numpy as np
+import pandas as pd
+import time as t
 from enum import Enum
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -16,6 +17,7 @@ PATH_YGO = 'data/yugioh'
 COUNT_MTG = 16_990
 COUNT_PKM = 21_199
 COUNT_YGO = 14_599
+IMAGE_DATA_SIZE = 350_000
 
 
 class CardType(Enum):
@@ -38,21 +40,21 @@ def convert_images_to_vectors(path: str, count: int | None = None):
         A list of numpy 1D vectors for each image processed.
     """
     # Establish the number of cards to process
-    card_vectors = []
     filenames = os.listdir(path)
     if count is None: count = len(filenames)
     filenames = filenames[:count]
+    card_vectors = np.empty((count, IMAGE_DATA_SIZE), dtype=np.float32)
 
     # Convert count number of cards
-    for filename in filenames:
+    for i, filename in enumerate(filenames):
         filepath = os.path.join(path, filename)
         card = cv.imread(filepath, cv.IMREAD_GRAYSCALE)
         if card is not None:
             card = card.ravel()
-            card = cv.normalize(src=card, dst=None, alpha=0.0, beta=1.0, norm_type=cv.NORM_MINMAX, dtype=cv.CV_32F)
-            card_vectors.append(card)
+            card = cv.normalize(src=card, dst=card_vectors[i], alpha=0.0, beta=1.0, norm_type=cv.NORM_MINMAX, dtype=cv.CV_32F)
         else:
             print(f"[ERROR] Could not process card {filepath}.")
+            card_vectors = 0    # Fallback case
 
     # Returns all of the cards as Numpy grayscale vectors.
     return card_vectors
@@ -70,13 +72,27 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
         A Pandas dataframe will all card mappings.
     """
     # Get the number of labels per card
-    card_data = np.concatenate(card_lists, axis=0).tolist()
     card_counts = [len(card_list) for card_list in card_lists]
     label_data = np.repeat(card_labels, card_counts).tolist()   # Repeats each label count times
 
+    start = t.perf_counter()
+    # Combine all of the card vectors together
+    card_data = np.empty((card_counts[0] + card_counts[1] + card_counts[2], IMAGE_DATA_SIZE), dtype=np.float32)
+    card_index = 0
+    for card_count, card_list in zip(card_counts, card_lists):
+        card_data[card_index : card_index + card_count, ...] = card_list
+        card_index += card_count
+    end = t.perf_counter()
+    print(end - start)
+    start = t.perf_counter()
+
     # Set the data dictionary and convert it to a dataframe
-    mapping = {'label': label_data, 'card': card_data}
+    mapping = {'label': label_data, 'card': list(card_data)}
     dataframe = pd.DataFrame(mapping)
+    valid_rows_mask = dataframe['card'].apply(np.any)   # Creates a mask for rows: Not all 0s (True), all 0s (False)
+    dataframe = dataframe[valid_rows_mask]              # Removes any all 0 rows from the dataframe
+    end = t.perf_counter()
+    print(end - start)
     return dataframe
 
 
@@ -94,13 +110,18 @@ def main():
     """
 
     #card_count = min(COUNT_MTG, COUNT_PKM, COUNT_YGO)
-    card_count = 10     # 10 for testing
+    card_count = 1000     # 10 for testing
 
     # Gets the vectors for all cards JPGs per path
-    print("[INFO] Converting card JPGS to vectors...")
+    print("[INFO] Converting 'Magic: The Gathering' card JPGs to vectors...")
     mtg_cards = convert_images_to_vectors(PATH_MTG, card_count)
+    #mtg_cards = convert_images_to_vectors(PATH_MTG, COUNT_MTG)
+    print("[INFO] Converting 'Pokemon' card JPGs to vectors...")
     pkm_cards = convert_images_to_vectors(PATH_PKM, card_count)
+    #pkm_cards = convert_images_to_vectors(PATH_PKM, COUNT_PKM)
+    print("[INFO] Converting 'Yu-Gi-Oh' card JPGs to vectors...")
     ygo_cards = convert_images_to_vectors(PATH_YGO, card_count)
+    #ygo_cards = convert_images_to_vectors(PATH_YGO, COUNT_YGO)
 
     # Add the card vectors into a Pandas dataframe
     print("[INFO] Creating Pandas dataframe...")
