@@ -11,4 +11,6 @@ urllib3
 opencv-python
 numpy
 scikit-learn
-pyarrow
+# pyarrow
+#dask[complete]
+#dask-ml

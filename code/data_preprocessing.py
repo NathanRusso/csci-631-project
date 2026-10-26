@@ -3,8 +3,11 @@ import cv2 as cv
 import numpy as np
 import pandas as pd
 import time as t
-import pyarrow as pa
-import pyarrow.parquet as pq
+#import pyarrow as pa
+#import pyarrow.parquet as pq
+#import dask.array as da
+#import dask.dataframe as dd
+#from dask_ml.model_selection import train_test_split
 from enum import Enum
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -98,6 +101,17 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
     end = t.perf_counter()
     print(f"\tTime Elapsed: {end - start}s.")
 
+    """
+    # Create the dataframe and filters out bad data
+    start = t.perf_counter()
+    card_data_dask_array = da.from_array(card_data, chunks=(sum(card_counts), IMAGE_DATA_SIZE))
+    dataframe = dd.from_dask_array(card_data_dask_array, columns=[f"card_pxl_{i+1}" for i in range(IMAGE_DATA_SIZE)])
+    label_dask_dask_array = da.from_array(label_data, chunks=(len(label_data),))
+    dataframe['label'] = label_dask_dask_array
+    valid_rows_mask = dataframe[dataframe.columns[1:]].any(axis=1)  # Creates a mask for rows: Not all 0s (True), all 0s (False)
+    dataframe = dataframe[valid_rows_mask]                          # Removes any all 0 rows from the dataframe
+    """
+
     # Create the dataframe and filters out bad data
     start = t.perf_counter()
     dataframe = pd.DataFrame(card_data, columns=[f"card_pxl_{i+1}" for i in range(IMAGE_DATA_SIZE)])
@@ -129,7 +143,7 @@ def main():
     """
 
     #card_count = min(COUNT_MTG, COUNT_PKM, COUNT_YGO)
-    card_count = 1_000     # 10 for testing
+    card_count = 100     # 10 for testing
 
     # Gets the vectors for all cards JPGs per path
     print("[INFO] Converting 'Magic: The Gathering' card JPGs to vectors...")
