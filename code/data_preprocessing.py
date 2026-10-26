@@ -33,15 +33,15 @@ PATH_TRAIN_YGO = 'data/train/train_ygo.dat'
 
 # Test Paths
 PATH_TEST = 'data/test'
-PATH_TEST_MTG = 'data/test/test_mtg'
-PATH_TEST_PKM = 'data/test/test_pkm'
-PATH_TEST_YGO = 'data/test/test_ygo'
+PATH_TEST_MTG = 'data/test/test_mtg.dat'
+PATH_TEST_PKM = 'data/test/test_pkm.dat'
+PATH_TEST_YGO = 'data/test/test_ygo.dat'
 
 # Validation Paths
 PATH_VALIDATION = 'data/validation'
-PATH_VALIDATION_MTG = 'data/validation/val_mtg'
-PATH_VALIDATION_PKM = 'data/validation/val_pkm'
-PATH_VALIDATION_YGO = 'data/validation/val_ygo'
+PATH_VALIDATION_MTG = 'data/validation/validation_mtg.dat'
+PATH_VALIDATION_PKM = 'data/validation/validation_pkm.dat'
+PATH_VALIDATION_YGO = 'data/validation/validation_ygo.dat'
 
 # Card Counts and Feature Size
 COUNT_MTG = 16_990
@@ -121,22 +121,19 @@ def train_test_validation_split(card_count: int, data_memmaps: list):
     rng = np.random.default_rng()
 
     # Copies all of the data from the MTG, PKM, & YGO data memmaps into separate train, test, & validation memmaps
-    for key, data_memmap in zip(['MTG', 'PKM', 'YGO'], data_memmaps):    # MTG, PKM, YGO
-        print(f"[INFO] Splitting {key} data into Train, Test, and Validation sets...")
+    for card_key, data_memmap in zip(['MTG', 'PKM', 'YGO'], data_memmaps):    # MTG, PKM, YGO
+        print(f"[INFO] Splitting {card_key} data into Train, Test, and Validation sets...")
         time_start = t.perf_counter()
 
-        # Generates a random sequence for how to pull data from the data memmap.
+        # Generates a random sequence for how to pull data from the data memmap
         random_indices = rng.choice(card_count, size=card_count, replace=False)
-
-        # Declares all of the needed memmaps
-        train_map = np.memmap(globals()[f"PATH_TRAIN_{key}"], dtype=np.float32, mode='w', shape=(train_count, IMAGE_DATA_SIZE))
-        test_map = np.memmap(globals()[f"PATH_TEST_{key}"], dtype=np.float32, mode='w', shape=(test_count, IMAGE_DATA_SIZE))
-        validation_map = np.memmap(globals()[f"PATH_VALIDATION_{key}"], dtype=np.float32, mode='w', shape=(validation_count, IMAGE_DATA_SIZE))
-        split_maps = [train_map, test_map, validation_map]
 
         # Move key data into its own train, test, & validation memmaps
         buffer = 0
-        for count, map in zip(split_counts, split_maps):
+        for count, set in zip(split_counts, ["TRAIN", "TEST", "VALIDATION"]):
+            # Creates the memmap for that card's set
+            map = np.memmap(globals()[f"PATH_{set}_{card_key}"], dtype=np.float32, mode='w+', shape=(count, IMAGE_DATA_SIZE))
+
             # Copy data through chunks
             chunk_count, chunk_remainder = divmod(count, CHUNK_SIZE)
             for i in range(0, chunk_count):
@@ -222,8 +219,7 @@ def main():
         - Load images from folders
         - Encode them as vectors
         - Normalize the vectors [0, 1]
-    2) Create a Pandas dataframe with labels
-    3) Split the data into Train, Test, and Validation sets.
+    2) Split the data into Train, Test, and Validation sets.
     """
 
     # Set the numbers of cards to process from each set
