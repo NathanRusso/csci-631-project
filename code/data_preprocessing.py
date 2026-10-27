@@ -156,8 +156,9 @@ def train_test_validation_split(card_count: int, data_memmaps: list):
         print(f"\tTime Elapsed: {time_end - time_start}s.")
 
 
+"""
 def create_dataframe(card_lists: list, card_labels: list[str]):
-    """
+    ""
     Creates a dataframe mapping card vectors to their label.
 
     Args:
@@ -166,7 +167,7 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
 
     Returns:
         A Pandas dataframe will all card mappings.
-    """
+    ""
     # Get the number of labels per card
     start = t.perf_counter()
     card_counts = [len(card_list) for card_list in card_lists]
@@ -182,7 +183,7 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
     end = t.perf_counter()
     print(f"\tTime Elapsed: {end - start}s.")
 
-    """
+    ""
     # Create the dataframe and filters out bad data
     start = t.perf_counter()
     card_data_dask_array = da.from_array(card_data, chunks=(sum(card_counts), IMAGE_DATA_SIZE))
@@ -191,7 +192,7 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
     dataframe['label'] = label_dask_dask_array
     valid_rows_mask = dataframe[dataframe.columns[1:]].any(axis=1)  # Creates a mask for rows: Not all 0s (True), all 0s (False)
     dataframe = dataframe[valid_rows_mask]                          # Removes any all 0 rows from the dataframe
-    """
+    ""
 
     # Create the dataframe and filters out bad data
     start = t.perf_counter()
@@ -208,7 +209,7 @@ def create_dataframe(card_lists: list, card_labels: list[str]):
     print(f"\tTime Elapsed: {end - start}s.")
 
     return dataframe
-
+"""
 
 def main():
     """
@@ -219,7 +220,7 @@ def main():
         - Load images from folders
         - Encode them as vectors
         - Normalize the vectors [0, 1]
-    2) Split the data into Train, Test, and Validation sets.
+    2) Splits the data into Train, Test, and Validation sets.
     """
 
     # Set the numbers of cards to process from each set
