@@ -3,7 +3,7 @@
 # at least 3 models
 # 1) CNN
 # 2) Vision Transformer (ViT)
-# 3) ?
+# 3) Mobile ViT
 
 """
 imagined manual data splitting:
